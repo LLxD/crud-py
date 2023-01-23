@@ -185,7 +185,6 @@ def seed_database():
 if __name__ == '__main__':
     # erase the database and create a new one
     app.app_context().push()
-    db.drop_all()
     db.create_all()
     seed_database()
     app.run(host="0.0.0.0",debug=True)
