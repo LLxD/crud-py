@@ -186,6 +186,8 @@ if __name__ == '__main__':
     # erase the database and create a new one
     app.app_context().push()
     db.create_all()
-    seed_database()
+    # if the db is empty, seed it
+    if not Airport.query.all():
+        seed_database()
     app.run(host="0.0.0.0",debug=True)
 
