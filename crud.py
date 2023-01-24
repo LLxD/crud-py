@@ -67,7 +67,7 @@ def generate_token(email, password):
 
 
 
-@app.route('/login/<email>/<password>', methods=['GET'])
+@app.route('/login/<email>/<password>', methods=['POST'])
 def login(email, password):
     user = User.query.filter_by(email=email, password=password).first()
     if user:
@@ -87,6 +87,14 @@ def logout(token):
         return "Logged out"
     else:
         return "User not found"
+
+@app.route('/validate_account/<token>', methods=['POST'])
+def validate_account(token):
+    user = User.query.filter_by(token=token).first()
+    if user:
+        return True
+    else:
+        return False
 
 @app.route('/create_account/<email>/<password>', methods=['POST'])
 def create_account(email, password):
