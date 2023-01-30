@@ -1,5 +1,5 @@
 # Use an official Python runtime as the base image
-FROM python:3.9
+FROM python:3.9-alpine
 
 # Set the working directory to /app
 WORKDIR /app
@@ -14,4 +14,4 @@ RUN pip install -r requirements.txt
 EXPOSE 4000
 
 # Run the command to start the Flask server
-CMD ["python3", "app.py"]
+CMD ["python", "app.py"]
