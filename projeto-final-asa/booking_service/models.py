@@ -3,13 +3,17 @@ from sqlalchemy.orm import declarative_base
 import json
 
 # Connect to the PostgreSQL database
-engine = create_engine('postgresql+psycopg2://postgres:1234@localhost:5432/booking_db')
+
+engine = create_engine(
+    'sqlite:///booking.db')
 
 # Create a new base class for declarative models
 Base = declarative_base()
 
+
 def to_dict(obj):
     return {c.name: getattr(obj, c.name) for c in obj.__table__.columns}
+
 
 class Booking(Base):
     __tablename__ = 'bookings'
@@ -20,6 +24,7 @@ class Booking(Base):
 
     def __repr__(self):
         return json.dumps(to_dict(self))
+
 
 # Create tables
 Base.metadata.create_all(engine)

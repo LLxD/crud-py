@@ -9,6 +9,7 @@ app = Flask(__name__)
 Session = sessionmaker(bind=engine)
 # session = Session()
 
+
 def generate_token(email, password):
     m = hashlib.sha256()
     m.update(email.encode('utf-8'))
@@ -16,11 +17,11 @@ def generate_token(email, password):
     return m.hexdigest()
 
 
-
 @app.route('/login/<email>/<password>', methods=['POST'])
 def login(email, password):
     session = Session()
-    user = session.query(User).filter_by(email=email, password=password).first()
+    user = session.query(User).filter_by(
+        email=email, password=password).first()
     if user:
         token = generate_token(email, password)
         user.token = token
@@ -28,6 +29,7 @@ def login(email, password):
         return token
     else:
         return "User not found"
+
 
 @app.route('/logout/<token>', methods=['GET'])
 def logout(token):
@@ -40,6 +42,7 @@ def logout(token):
     else:
         return "User not found"
 
+
 @app.route('/validate_account/<token>', methods=['POST'])
 def validate_account(token):
     session = Session()
@@ -48,6 +51,7 @@ def validate_account(token):
         return 'valid user'
     else:
         return 'invalid user'
+
 
 @app.route('/create_account/<email>/<password>', methods=['POST'])
 def create_account(email, password):
@@ -63,5 +67,6 @@ def create_account(email, password):
         session.commit()
         return token
 
+
 if __name__ == '__main__':
-    app.run(debug=True, port=3000)
+    app.run(port=3000)

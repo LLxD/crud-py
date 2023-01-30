@@ -47,6 +47,7 @@ def view_flights_by_origin_destination_lower_price_min_capacity(origin, destinat
     session.close()
     return str(flights)
 
+
 @app.route('/flight_capacity/<flight_id>/<tickets_wanted>', methods=['PUT'])
 def update_flight_capactity(flight_id, tickets_wanted):
     session = Session()
@@ -99,4 +100,4 @@ if __name__ == '__main__':
         print("Seeding the database")
         seed_database()
 
-    app.run(debug=True, port=4000)
+    app.run(port=4000)

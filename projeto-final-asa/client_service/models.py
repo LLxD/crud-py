@@ -5,7 +5,9 @@ from sqlalchemy.orm import declarative_base
 import json
 
 # Connect to the PostgreSQL database
-engine = create_engine('postgresql+psycopg2://postgres:1234@localhost:5432/user_db')
+
+engine = create_engine(
+    'sqlite:///users.db')
 
 # Create a new base class for declarative models
 Base = declarative_base()
@@ -24,6 +26,7 @@ class User(Base):
 
     def __repr__(self):
         return '<User %r>' % self.email
+
 
 # Create tables
 Base.metadata.create_all(engine)

@@ -3,14 +3,17 @@ from sqlalchemy.orm import declarative_base
 import json
 
 # Connect to the PostgreSQL database
-engine = create_engine('postgresql+psycopg2://postgres:1234@localhost:5432/airport_db')
 
+engine = create_engine(
+    'sqlite:///airport.db')
 
 # Create a new base class for declarative models
 Base = declarative_base()
 
+
 def to_dict(obj):
     return {c.name: getattr(obj, c.name) for c in obj.__table__.columns}
+
 
 class Airport(Base):
     __tablename__ = 'airports'
@@ -20,7 +23,8 @@ class Airport(Base):
 
     def __repr__(self):
         return json.dumps(to_dict(self))
-        
+
+
 class Flight(Base):
     __tablename__ = 'flights'
     id = Column(Integer, primary_key=True)
@@ -29,9 +33,9 @@ class Flight(Base):
     price = Column(String(120), nullable=False)
     max_capacity = Column(Integer, nullable=False)
 
-
     def __repr__(self):
         return json.dumps(to_dict(self))
+
 
 # Create tables
 Base.metadata.create_all(engine)
