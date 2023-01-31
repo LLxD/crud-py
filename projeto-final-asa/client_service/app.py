@@ -43,6 +43,14 @@ def logout(token):
         return "User not found"
 
 
+@app.route('/users', methods=['GET'])
+def get_users():
+    session = Session()
+    users = session.query(User).all()
+    session.close()
+    return str(users)
+
+
 @app.route('/validate_account/<token>', methods=['POST'])
 def validate_account(token):
     session = Session()
@@ -69,4 +77,4 @@ def create_account(email, password):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=3000)
+    app.run(port=3000)
