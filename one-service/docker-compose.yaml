@@ -1,0 +1,11 @@
+version: '3.7'
+
+services:
+  web:
+    build: .
+    command: python app.py
+    volumes:
+      - .:/code
+      - ./instance:/code/instance
+    ports:
+      - "5000:5000"
