@@ -3,7 +3,7 @@ version: '3.7'
 services:
   web:
     build: .
-    command: python crud.py
+    command: python app.py
     volumes:
       - .:/code
       - ./instance:/code/instance
