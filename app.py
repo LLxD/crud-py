@@ -2,7 +2,7 @@ from flask import Flask
 from sqlalchemy.orm import sessionmaker
 from models import User, Airport, Flight, Booking, engine
 from utils import generate_token, send_to_rabbit_mq, seed_database
-
+import json
 
 app = Flask(__name__)
 
@@ -28,9 +28,9 @@ def login(email, password):
         token = generate_token(email, password)
         user.token = token
         session.commit()
-        return token
+        return json.dumps({"token": token})
     else:
-        return "User not found"
+        return json.dumps({"error": "User not found"})
 
 
 @app.route('/logout/<token>', methods=['GET'])
@@ -40,9 +40,9 @@ def logout(token):
     if user:
         user.token = ""
         session.commit()
-        return "Logged out"
+        return json.dumps({"success": "User logged out"})
     else:
-        return "User not found"
+        return json.dumps({"error": "User not found"})
 
 
 @app.route('/validate_account/<token>', methods=['POST'])
@@ -50,9 +50,9 @@ def validate_account(token):
     session = Session()
     user = session.query(User).filter_by(token=token).first()
     if user:
-        return 'valid user'
+        return json.dumps({"success": "User validated"})
     else:
-        return 'invalid user'
+        return json.dumps({"error": "User not found"})
 
 
 @app.route('/create_account/<email>/<password>', methods=['POST'])
@@ -104,14 +104,14 @@ def view_flights_by_origin_destination_lower_price_min_capacity(origin, destinat
     return str(flights)
 
 
-@app.route('/flight_capacity/<flight_id>/<tickets_wanted>', methods=['POST'])
-def update_flight_capactity(flight_id, tickets_wanted):
+@app.route('/flight_capacity/<flight_id>/<desired_capacity>', methods=['PUT'])
+def update_flight_capactity(flight_id, desired_capacity):
     session = Session()
     # decrease the capacity of the flight by the number of people
     flight = session.query(Flight).filter_by(id=flight_id).first()
-    flight.max_capacity -= int(tickets_wanted)
+    flight.max_capacity = int(desired_capacity)
     session.commit()
-    return {"status": flight.max_capacity}
+    return json.dumps({"success": "Flight capacity updated"})
 
 
 
@@ -132,7 +132,7 @@ def book_flight(user_id, flight_id, date, tickets_wanted):
     flight.max_capacity -= int(tickets_wanted)
     session.commit()
     send_to_rabbit_mq(str(booking))
-    return "Flight booked"
+    return json.dumps({"success": "Flight booked", "booking": str(booking)})
 
 
 
