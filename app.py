@@ -61,7 +61,7 @@ def create_account(email, password):
     # check if the user already exists
     user = session.query(User).filter_by(email=email).first()
     if user:
-        return "User already exists"
+        return json.dumps({"error": "User already exists"})
     else:
         token = generate_token(email, password)
         user = User(email=email, password=password, token=token)
