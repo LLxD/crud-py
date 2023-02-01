@@ -67,7 +67,7 @@ def create_account(email, password):
         user = User(email=email, password=password, token=token)
         session.add(user)
         session.commit()
-        return token
+        return json.dumps({"success": "User created", "token": token})
 
 # Airports and flights handlers
 
